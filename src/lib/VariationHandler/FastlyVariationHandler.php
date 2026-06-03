@@ -7,6 +7,8 @@ namespace Kaliop\Image\VariationHandler;
 use Ibexa\Bundle\Core\Variation\PathResolver;
 use Ibexa\Contracts\Core\FieldType\Value;
 use Ibexa\Contracts\Core\Repository\ContentService;
+use Ibexa\Contracts\Core\Repository\Exceptions\NotFoundException;
+use Ibexa\Contracts\Core\Repository\Exceptions\UnauthorizedException;
 use Ibexa\Contracts\Core\Repository\Values\Content\Field;
 use Ibexa\Contracts\Core\Repository\Values\Content\VersionInfo;
 use Ibexa\Contracts\Core\SiteAccess\ConfigResolverInterface;
@@ -31,21 +33,20 @@ class FastlyVariationHandler implements VariationHandler
         private AssetMapper $assetMapper,
         private ConfigResolverInterface $configResolver,
         private VariationHandler $referenceHandler
-    ) {
-    }
+    ) {}
 
     /**
-     * @param \Ibexa\Contracts\Core\Repository\Values\Content\Field $field
-     * @param \Ibexa\Contracts\Core\Repository\Values\Content\VersionInfo $versionInfo
+     * @param Field $field
+     * @param VersionInfo $versionInfo
      * @param string $variationName
      * @param array<string, mixed> $parameters
      *
-     * @return \Ibexa\Contracts\Core\Variation\Values\Variation
+     * @return Variation
      *
-     * @throws \Ibexa\Core\Base\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      * @throws \Ibexa\Contracts\Core\Repository\Exceptions\InvalidArgumentException
-     * @throws \Ibexa\Contracts\Core\Repository\Exceptions\NotFoundException
-     * @throws \Ibexa\Contracts\Core\Repository\Exceptions\UnauthorizedException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
      */
     public function getVariation(
         Field $field,
@@ -140,8 +141,13 @@ class FastlyVariationHandler implements VariationHandler
     /**
      * When uri contains a crop parameter with a focal-point value, update the parameter with a correct XY values.
      */
-    private function updateFocalPointCrop(string $uri, int $width, int $height, ?int $focalPointX = null, ?int $focalPointY = null): string
-    {
+    private function updateFocalPointCrop(
+        string $uri,
+        int $width,
+        int $height,
+        ?int $focalPointX = null,
+        ?int $focalPointY = null
+    ): string {
         $parts = parse_url($uri);
 
         $params = [];

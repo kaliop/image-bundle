@@ -44,9 +44,13 @@ class ImagineVariationHandler implements VariationHandler
     /**
      * @param array<string, mixed> $parameters
      */
-    public function getVariation(Field $field, VersionInfo $versionInfo, $variationName, array $parameters = []): ImageVariation
-    {
-        /** @var \Ibexa\Core\FieldType\Image\Value $imageValue */
+    public function getVariation(
+        Field $field,
+        VersionInfo $versionInfo,
+        $variationName,
+        array $parameters = []
+    ): ImageVariation {
+        /** @var ImageValue $imageValue */
         $imageValue = $field->value;
 
         /** @var string $fieldId */
@@ -110,8 +114,11 @@ class ImagineVariationHandler implements VariationHandler
         );
     }
 
-    private function applyFilter(ImageValue $value, BinaryInterface $image, string $variationName): BinaryInterface
-    {
+    private function applyFilter(
+        ImageValue $value,
+        BinaryInterface $image,
+        string $variationName
+    ): BinaryInterface {
         $filterConfig = $this->filterConfiguration->get($variationName);
         // If the variation has a reference, we recursively call this method to apply reference's filters.
         if (isset($filterConfig['reference']) && $filterConfig['reference'] !== IORepositoryResolver::VARIATION_ORIGINAL) {

@@ -21,8 +21,7 @@ class ImageSourceExtension extends AbstractExtension
         private readonly VariationHandler $imageVariationService,
         private readonly MultiplierConfigurationProvider $configurationProvider,
         private readonly LoggerInterface $logger,
-    ) {
-    }
+    ) {}
 
     public function getFunctions(): array
     {
@@ -34,8 +33,12 @@ class ImageSourceExtension extends AbstractExtension
         ];
     }
 
-    public function getImageSrcset(Field $field, VersionInfo $versionInfo, string $variation, bool $webp = false): string
-    {
+    public function getImageSrcset(
+        Field $field,
+        VersionInfo $versionInfo,
+        string $variation,
+        bool $webp = false
+    ): string {
         $srcset = [
             $this->getImageVariationUrl($field, $versionInfo, $webp ? $variation . '-webp' : $variation),
         ];
@@ -52,8 +55,11 @@ class ImageSourceExtension extends AbstractExtension
         return implode(",\n", array_filter($srcset));
     }
 
-    private function getImageVariationUrl(Field $field, VersionInfo $versionInfo, string $variationName): ?string
-    {
+    private function getImageVariationUrl(
+        Field $field,
+        VersionInfo $versionInfo,
+        string $variationName
+    ): ?string {
         try {
             return str_replace(
                 ' ',

@@ -15,8 +15,10 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class KaliopImageExtension extends Extension implements PrependExtensionInterface
 {
-    public function load(array $configs, ContainerBuilder $container): void
-    {
+    public function load(
+        array $configs,
+        ContainerBuilder $container
+    ): void {
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yaml');
 

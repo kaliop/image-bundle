@@ -15,8 +15,10 @@ class FocalPointThumbnailFilterLoader implements LoaderInterface
     /**
      * @param array<string, mixed> $options
      */
-    public function load(ImageInterface $image, array $options = []): ImageInterface
-    {
+    public function load(
+        ImageInterface $image,
+        array $options = []
+    ): ImageInterface {
         $mode = ImageInterface::THUMBNAIL_OUTBOUND;
         if (!empty($options['mode']) && 'inset' === $options['mode']) {
             $mode = ImageInterface::THUMBNAIL_INSET;

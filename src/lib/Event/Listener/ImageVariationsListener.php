@@ -19,8 +19,7 @@ class ImageVariationsListener implements EventSubscriberInterface
         private readonly ConfigResolverInterface $configResolver,
         private readonly MultiplierConfigurationProvider $multiplierConfigurationProvider,
         private readonly WebpConfigurationProvider $webpConfigurationProvider,
-    ) {
-    }
+    ) {}
 
     public static function getSubscribedEvents(): array
     {
@@ -89,8 +88,10 @@ class ImageVariationsListener implements EventSubscriberInterface
      *
      * @return array<string, mixed>
      */
-    protected function getImageVariationMultiplierConfig(float $multiplier, array $config): array
-    {
+    protected function getImageVariationMultiplierConfig(
+        float $multiplier,
+        array $config
+    ): array {
         if (isset($config['filters'])) {
             foreach ($config['filters'] as $filter => $filterConfig) {
                 if (is_array($filterConfig)) {
