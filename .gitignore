@@ -1,0 +1,10 @@
+/.idea
+/.php-cs-fixer.cache
+/.phpunit.result.cache
+/.deptrac.cache
+/composer.lock
+/node_modules/
+/vendor
+/yarn.lock
+/var
+.DS_Store

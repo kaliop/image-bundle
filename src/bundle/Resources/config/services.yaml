@@ -1,0 +1,36 @@
+services:
+    _defaults:
+        autoconfigure: true
+        autowire: true
+        public: false
+
+    Kaliop\Bundle\Image\Templating\ImageSourceExtension:
+        tags:
+            - { name: twig.extension }
+
+    Kaliop\Image\Configuration\MultiplierConfigurationProvider: ~
+    Kaliop\Image\Configuration\WebpConfigurationProvider: ~
+
+    Kaliop\Image\Event\Listener\ImageVariationsListener:
+        arguments:
+            $filterConfiguration: '@liip_imagine.filter.configuration'
+        tags:
+            - { name: kernel.event_subscriber }
+
+    Kaliop\Image\Imagine\Filter\FocalPointThumbnailFilterLoader:
+        tags:
+            - { name: 'liip_imagine.filter.loader', loader: 'thumbnail/focal-point' }
+
+    Kaliop\Image\UI\ImageVariationsProvider:
+        tags:
+            - { name: ibexa.admin_ui.config.provider, key: 'imageVariations', priority: -255 }
+
+    Kaliop\Image\VariationHandler\ImagineVariationHandler:
+        decorates: 'ibexa.image_alias.imagine.alias_generator'
+        decoration_priority: 10
+        arguments:
+            - '@Ibexa\Bundle\Core\Imagine\BinaryLoader'
+            - "@liip_imagine.filter.manager"
+            - '@ibexa.image_alias.imagine.cache_resolver'
+            - "@liip_imagine.filter.configuration"
+            - "@?logger"
