@@ -47,7 +47,7 @@ class ImagineVariationHandler implements VariationHandler
     public function getVariation(
         Field $field,
         VersionInfo $versionInfo,
-        $variationName,
+        string $variationName,
         array $parameters = []
     ): ImageVariation {
         /** @var ImageValue $imageValue */
