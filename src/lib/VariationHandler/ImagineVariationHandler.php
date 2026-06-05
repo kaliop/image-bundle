@@ -110,7 +110,7 @@ class ImagineVariationHandler implements VariationHandler
                 'imageId' => $imageValue->imageId,
                 'width' => $variationWidth,
                 'height' => $variationHeight,
-                'fileSize' => $imageValue->getFileSize() ?? 0,
+                'fileSize' => $imageValue->getFileSize() ?: 0,
                 'mimeType' => $imageValue->mime ?? '',
             ]
         );
