@@ -123,12 +123,20 @@ class FastlyVariationHandler implements VariationHandler
             isset($additionalData['focalPointY']) ? (int) ($additionalData['focalPointY']) : null
         );
 
+        [$variationWidth, $variationHeight] = $this->resolveVariationDimensions(
+            $configuration[$variationName]['configuration'] ?? [],
+            (int) $value->width,
+            (int) $value->height
+        );
+
         return new ImageVariation([
             'imageId' => $value->imageId,
             'name' => $variationName,
             'handler' => self::IDENTIFIER,
             'isExternal' => true,
             'lastModified' => $versionInfo->modificationDate,
+            'width' => $variationWidth,
+            'height' => $variationHeight,
             'uri' => $uri,
         ]);
     }
@@ -136,6 +144,55 @@ class FastlyVariationHandler implements VariationHandler
     private function supports(Value $value): bool
     {
         return $value instanceof ImageValue || $value instanceof ImageAssetValue;
+    }
+
+    /**
+     * Resolve the pixel dimensions Fastly will serve for a variation.
+     *
+     * The Fastly handler performs no local image processing, so unlike the Imagine
+     * handler it would otherwise return an ImageVariation with null width/height.
+     * Templates relying on ibexa_image_alias(...).width/height (e.g. <canvas> aspect
+     * boxes) then render empty dimensions. We reconstruct the dimensions from the
+     * Fastly variation configuration and the source image size.
+     *
+     * @param array<string, mixed> $configuration
+     *
+     * @return array{0: int|null, 1: int|null} [width, height]
+     */
+    private function resolveVariationDimensions(array $configuration, int $sourceWidth, int $sourceHeight): array
+    {
+        // Fixed crop, e.g. "1344,756,focal-point" -> exact output size.
+        if (isset($configuration['crop']) && is_string($configuration['crop'])) {
+            $parts = explode(',', $configuration['crop']);
+            if (isset($parts[0], $parts[1]) && is_numeric($parts[0]) && is_numeric($parts[1])) {
+                return [(int) $parts[0], (int) $parts[1]];
+            }
+        }
+
+        // Bounded scale, e.g. { width: 1344, height: 100p, fit: bounds } -> scale to
+        // fit the width preserving aspect ratio, never upscaling ("100p" caps height
+        // at the source height, so the width is the binding constraint).
+        if (
+            isset($configuration['fit']) && $configuration['fit'] === 'bounds'
+            && $sourceWidth > 0 && $sourceHeight > 0
+        ) {
+            $maxWidth = isset($configuration['width']) && is_numeric($configuration['width'])
+                ? (int) $configuration['width']
+                : $sourceWidth;
+            $scale = min($maxWidth / $sourceWidth, 1.0);
+
+            return [(int) round($sourceWidth * $scale), (int) round($sourceHeight * $scale)];
+        }
+
+        // Explicit numeric width/height, otherwise fall back to the source dimensions.
+        $width = isset($configuration['width']) && is_numeric($configuration['width'])
+            ? (int) $configuration['width']
+            : ($sourceWidth ?: null);
+        $height = isset($configuration['height']) && is_numeric($configuration['height'])
+            ? (int) $configuration['height']
+            : ($sourceHeight ?: null);
+
+        return [$width, $height];
     }
 
     /**
