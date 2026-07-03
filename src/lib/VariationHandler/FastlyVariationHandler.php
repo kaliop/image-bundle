@@ -159,12 +159,15 @@ class FastlyVariationHandler implements VariationHandler
      *
      * @return array{0: int|null, 1: int|null} [width, height]
      */
-    private function resolveVariationDimensions(array $configuration, int $sourceWidth, int $sourceHeight): array
-    {
+    private function resolveVariationDimensions(
+        array $configuration,
+        int $sourceWidth,
+        int $sourceHeight
+    ): array {
         // Fixed crop, e.g. "1344,756,focal-point" -> exact output size.
         if (isset($configuration['crop']) && is_string($configuration['crop'])) {
             $parts = explode(',', $configuration['crop']);
-            if (isset($parts[0], $parts[1]) && is_numeric($parts[0]) && is_numeric($parts[1])) {
+            if (isset($parts[1]) && is_numeric($parts[0]) && is_numeric($parts[1])) {
                 return [(int) $parts[0], (int) $parts[1]];
             }
         }
