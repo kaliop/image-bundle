@@ -42,6 +42,7 @@ class ImagineVariationHandler implements VariationHandler
     }
 
     /**
+     * @param string $variationName
      * @param array<string, mixed> $parameters
      */
     public function getVariation(
