@@ -32,7 +32,7 @@
         "ibexa/core": "~5.0.0",
         "ibexa/admin-ui": "~5.0.0",
         "nyholm/psr7": "^1.8",
-        "guzzlehttp/promises": "^2.5"
+        "guzzlehttp/promises": "^3.0"
     },
     "require-dev": {
         "ibexa/code-style": "~2.3.0",
